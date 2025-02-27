@@ -1,0 +1,44 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>SMS Inbox</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" (click)="scanByHours(1)">Scan Last Hour</ion-button>
+          <ion-button expand="block" (click)="scanByHours(24)">Scan Last 24 Hours</ion-button>
+          <ion-button expand="block" (click)="scanByDays(1)">Scan Last Day</ion-button>
+          <ion-button expand="block" (click)="scanByDays(7)">Scan Last 7 Days</ion-button>
+          <ion-button expand="block" (click)="scanAll()">Scan All</ion-button>
+        </ion-col>
+      </ion-row>
+  
+      <ion-row>
+        <ion-col>
+          <sms-loader [isloading]="isLoading"></sms-loader>
+        </ion-col>
+      </ion-row>
+  
+      <ion-row>
+        <ion-col>
+          <sms-scan-statistics [result]="scanResult"></sms-scan-statistics>
+        </ion-col>
+      </ion-row>
+  
+      <ion-row>
+        <ion-col>
+          <sms-inbox-view [transactions]="transactions"></sms-inbox-view>
+        </ion-col>
+      </ion-row>
+  
+      <!-- <ion-row>
+        <ion-col>
+          <ion-button expand="block" (click)="exportDatabase()">Export Database</ion-button>
+        </ion-col>
+      </ion-row> -->
+    </ion-grid>
+  </ion-content>
+  

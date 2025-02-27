@@ -7,9 +7,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  
-
   <div>{{output}}</div>
   <ion-button (click)="echoButton()">Default</ion-button>
   <ion-button (click)="showError()">Error</ion-button>
+
+  <ion-button (click)="navigateToSMSProcessing()">
+ SMS Processing
+  </ion-button>
 </ion-content>

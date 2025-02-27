@@ -5,6 +5,9 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+  },{
+    path: 'sms-processing',
+    loadChildren: () => import('./sms-processing/sms-processing.module').then( m => m.SmsProcessingModule)
   },
   {
     path: '',

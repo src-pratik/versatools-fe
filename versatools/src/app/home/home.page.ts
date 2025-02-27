@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import Echo from '../plugin';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -11,8 +12,12 @@ export class HomePage {
 
   index: number = 0;
   output: string = 'Click Echo';
-  constructor() { }
 
+  constructor(private router: Router) { }
+
+  navigateToSMSProcessing() {
+    this.router.navigate(['/sms-processing']);
+  }
 
   async echoButton() {
     this.index++;
@@ -26,6 +31,6 @@ export class HomePage {
 
     const { value } = await Echo.echo({ value: 'showerror' });
     this.output = value;
-    
+
   }
 }

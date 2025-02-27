@@ -1,0 +1,15 @@
+<ion-card >
+    <ion-card-header>
+      <ion-card-title>Scan Statistics</ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="result">
+      <p>{{ result.message }}</p>
+      <p>Processed Messages: {{ result.processedCount }}</p>
+      <p>Last Scan: {{ result.lastScan }}</p>
+    </ion-card-content>
+    <ion-card-content *ngIf="!result">
+      <p>No Scan performed</p>
+    </ion-card-content>
+  </ion-card>
+  
+  

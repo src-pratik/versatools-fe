@@ -1,0 +1,20 @@
+<ion-card *ngIf="transactions">
+  <ion-card-header>
+    <ion-card-title>Inbox Contents</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item *ngFor="let transaction of transactions | slice:0:50">
+        <ion-label>
+          <h2>{{ transaction.sender }}</h2>
+          <p>{{ transaction.date }}</p>
+          <p>{{ transaction.body }} </p>
+          <p>{{ transaction.id }} </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+<ion-card *ngIf="transactions && transactions.length === 0">
+  <ion-card-content>No transactions found.</ion-card-content>
+</ion-card>
