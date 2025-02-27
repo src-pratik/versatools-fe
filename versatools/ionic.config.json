@@ -1,0 +1,7 @@
+{
+  "name": "versatools",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
