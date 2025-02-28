@@ -3,15 +3,15 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    path: 'garage',
+    loadChildren: () => import('./garage/garage.module').then( m => m.GarageModule)
   },{
     path: 'sms-processing',
     loadChildren: () => import('./sms-processing/sms-processing.module').then( m => m.SmsProcessingModule)
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'garage',
     pathMatch: 'full'
   },
 ];

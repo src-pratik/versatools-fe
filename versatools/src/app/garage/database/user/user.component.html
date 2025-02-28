@@ -1,0 +1,17 @@
+<div class="user-test">
+  <h2>User Management</h2>
+
+  <div class="form">
+    <input type="text" [(ngModel)]="newUser.name" placeholder="Name" />
+    <input type="email" [(ngModel)]="newUser.email" placeholder="Email" />
+    <input type="text" [(ngModel)]="newUser.phone" placeholder="Phone (Optional)" />
+    <button (click)="addUser()">Add User</button>
+  </div>
+
+  <ul>
+    <li *ngFor="let user of users">
+      {{ user.name }} - {{ user.email }} - {{ user.phone || 'N/A' }}
+      <button (click)="deleteUser(user.id!)">Delete</button>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Garage
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div>{{output}}</div>
+  <ion-button (click)="echoButton()">Default</ion-button>
+  <ion-button (click)="showError()">Error</ion-button>
+  <br />
+  <ion-button (click)="navigateToSMSProcessing()">
+    SMS Processing
+  </ion-button>
+  <br />
+  <ion-button (click)="startDB()">
+    Start Database
+  </ion-button>
+  <br />
+  <ion-button (click)="startAndMigrateDB()">
+    Start & Migrate Database
+  </ion-button>
+  <br />
+  <ion-button (click)="healthCheckDB()">
+    Healthcheck DB
+  </ion-button>
+  <ion-button (click)="closeDB()">
+    Close DB
+  </ion-button>
+  <ion-button (click)="navigateToUserTest()">
+    User Test
+  </ion-button>
+  <br />
+  <ion-button (click)="navigateToImportExport()">
+    Import Export
+  </ion-button>
+  <br />
+</ion-content>
