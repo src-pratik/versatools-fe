@@ -6,7 +6,7 @@ import { AbstractSQLiteService } from 'src/app/shared/sqlite.service';
 @Injectable({
   providedIn: 'root'
 })
-export class MoneyTrackrDatabaseSetupService extends AbstractSQLiteService {
+export class MoneyTrackrDatabaseService extends AbstractSQLiteService {
 
   constructor(sqliteConnection: SQLiteConnection) {
     super('versatools_moneytrackr', 1, sqliteConnection);

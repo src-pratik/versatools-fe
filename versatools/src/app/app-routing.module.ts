@@ -4,14 +4,19 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: 'garage',
-    loadChildren: () => import('./garage/garage.module').then( m => m.GarageModule)
-  },{
+    loadChildren: () => import('./garage/garage.module').then(m => m.GarageModule)
+  },
+  {
     path: 'sms-processing',
-    loadChildren: () => import('./sms-processing/sms-processing.module').then( m => m.SmsProcessingModule)
+    loadChildren: () => import('./sms-processing/sms-processing.module').then(m => m.SmsProcessingModule)
+  },
+  {
+    path: 'moneytrackr',
+    loadChildren: () => import('./features/moneytrackr/moneytrackr.module').then(m => m.MoneyTrackrModule)
   },
   {
     path: '',
-    redirectTo: 'garage',
+    redirectTo: 'moneytrackr',
     pathMatch: 'full'
   },
 ];
