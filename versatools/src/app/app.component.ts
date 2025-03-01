@@ -14,5 +14,10 @@ export class AppComponent {
   async ngOnInit(): Promise<void> {
     if (Capacitor.isNativePlatform())
       await this.moneytrackrDBSetupService.initializeDatabase(true);
+    else{
+      await this.moneytrackrDBSetupService.initWebStore();
+      await this.moneytrackrDBSetupService.initializeDatabase(true);
+    }
+      
   }
 }

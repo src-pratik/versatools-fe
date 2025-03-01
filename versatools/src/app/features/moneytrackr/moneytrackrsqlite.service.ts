@@ -17,4 +17,13 @@ export class MoneyTrackrDatabaseService extends AbstractSQLiteService {
     }
     return migrationScripts[version] || null;
   }
+  async initWebStore(): Promise<void> {
+    try {
+      await this.sqliteConnection.initWebStore();
+    } catch (err: any) {
+      const msg = err.message ? err.message : err;
+      return Promise.reject(`initWebStore: ${err}`);
+    }
+  }
+
 }
