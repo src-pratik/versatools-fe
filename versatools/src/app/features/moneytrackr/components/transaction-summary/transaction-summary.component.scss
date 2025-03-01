@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item {
+  border-radius: 15px;
+  margin-bottom: 10px;
+  border-width: 1px;
+  min-width: 48%;
+  max-width: 48%;
+}
+
+.expense {}
+
+.income {}
+
+.icon-container {
+  width: 36px;
+  height: 36px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30%;
+
+}
+
+.icon {
+  font-size: 36px;
+  color: white;
+}
+
+.label {
+  margin-left: 10px;
+}
+
+.description {
+  font-size: 10px;
+}
+
+.moneyvalue {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.information {}

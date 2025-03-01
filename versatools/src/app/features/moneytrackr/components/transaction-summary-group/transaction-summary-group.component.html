@@ -1,0 +1,11 @@
+<div style="margin-bottom: 10px;">
+  <ion-segment [(ngModel)]="selectedKey" (ionChange)="onSegmentChange()">
+    <ion-segment-button *ngFor="let item of data" [value]="item.key">
+      <ion-label>{{ item.display }}</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</div>
+
+<div *ngIf="selectedItem">
+  <app-transaction-summary [expense]="selectedItem.expense" [income]="selectedItem.income"></app-transaction-summary>
+</div>

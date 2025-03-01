@@ -17,7 +17,7 @@ export class HomeService extends AbstractUIFeedbackService {
   private getTransactionSummary(): Observable<any> {
     let month = new Date().toLocaleString('default', { month: '2-digit' });
     let year = new Date().getFullYear().toString();
-    return from(this.db.getSummary(month, year));
+    return from(this.db.getSummary('09', '2023'));
   }
 
   // private getTransactionRecent(): Observable<TransactionGroup[]> {
@@ -30,7 +30,7 @@ export class HomeService extends AbstractUIFeedbackService {
     }
     const loading = await this.loaderLoadingData();
     await loading.present();
-  
+
     try {
       const summaryOb = await firstValueFrom(this.getTransactionSummary().pipe(
         finalize(async () => {
@@ -41,7 +41,7 @@ export class HomeService extends AbstractUIFeedbackService {
         })
       ));
       // const recentOb = this.getTransactionRecent();
-  
+
       // const output = await firstValueFrom(forkJoin([summaryOb, recentOb]).pipe(
       //     finalize(async () => {
       //         await loading.dismiss();
@@ -50,8 +50,9 @@ export class HomeService extends AbstractUIFeedbackService {
       //         }
       //     })
       // ));
+      console.debug(JSON.stringify(summaryOb));
       return [summaryOb, null]; // Return summaryOb and null for recentOb since it is commented out.
-  
+
     } catch (error) {
       if (this.enableLogs) {
         console.error('Error in onPageLoadAsync:', error);

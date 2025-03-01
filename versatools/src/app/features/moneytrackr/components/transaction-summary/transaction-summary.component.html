@@ -1,0 +1,21 @@
+<div *ngIf="expense||income" class="container">
+  <ion-item class="item expense" lines="none">
+    <ion-avatar slot="start" class="icon-container" style="background-color: #C65A38;">
+      <ion-icon name="arrow-up" class="icon"></ion-icon>
+    </ion-avatar>
+    <ion-label class="information">
+      <h6 class="description">Expense</h6>
+      <h2 class="moneyvalue">{{ expense | currency: 'INR' }}</h2>
+    </ion-label>
+  </ion-item>
+
+  <ion-item class="item income" lines="none">
+    <ion-avatar slot="start" class="icon-container" style="background-color: #8A9C2D;">
+      <ion-icon name="arrow-down" class="icon"></ion-icon>
+    </ion-avatar>
+    <ion-label class="information">
+      <h6 class="description">Income</h6>
+      <h2 class="moneyvalue">{{ income | currency: 'INR' }}</h2>
+    </ion-label>
+  </ion-item>
+</div>

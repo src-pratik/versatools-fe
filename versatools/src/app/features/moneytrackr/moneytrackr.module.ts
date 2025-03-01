@@ -6,6 +6,7 @@ import { MoneyTrackrRoutingModule } from './moneytrackr-routing.module';
 import { HomePage } from './pages/home/home.page';
 import { IonicModule } from '@ionic/angular';
 import { HomeService } from './pages/home/home.service';
+import { ComponentsModule } from './components/components.module';
 
 
 
@@ -15,6 +16,7 @@ import { HomeService } from './pages/home/home.service';
     CommonModule,
     FormsModule,
     IonicModule,
+    ComponentsModule,
     MoneyTrackrRoutingModule
   ],
   providers: [
