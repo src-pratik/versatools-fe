@@ -24,7 +24,7 @@ export class HomeService extends AbstractUIFeedbackService {
   //   return this.http.get<TransactionGroup[]>(`${environment.apiBaseUrl}/transaction/recent`)
   // }
 
-  async onPageLoadAsync(): Promise<[summary: any | null, recent: any | null]> {
+  async onPageLoadAsync(): Promise<[summary: TransactionSummary[] | null, recent: any | null]> {
     if (this.enableLogs) {
       console.log('onPageLoadAsync called');
     }
@@ -32,6 +32,7 @@ export class HomeService extends AbstractUIFeedbackService {
     await loading.present();
 
     try {
+
       const summaryOb = await firstValueFrom(this.getTransactionSummary().pipe(
         finalize(async () => {
           await loading.dismiss();
@@ -50,8 +51,8 @@ export class HomeService extends AbstractUIFeedbackService {
       //         }
       //     })
       // ));
-      console.debug(JSON.stringify(summaryOb));
-      return [summaryOb, null]; // Return summaryOb and null for recentOb since it is commented out.
+
+      return [summaryOb as TransactionSummary[], null]; // Return summaryOb and null for recentOb since it is commented out.
 
     } catch (error) {
       if (this.enableLogs) {

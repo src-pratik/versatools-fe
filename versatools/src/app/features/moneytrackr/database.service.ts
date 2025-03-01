@@ -5,16 +5,15 @@ import { MoneyTrackrDatabaseService } from './moneytrackrsqlite.service';
 export class DatabaseService {
 
   constructor(private dbService: MoneyTrackrDatabaseService) { }
-
   async getSummary(month: string, year: string): Promise<any> {
     const datestring = `${year}-${month}-01`;
 
     const sql = `-- Define variables with a test date
             WITH DateVariables AS (
               SELECT
-                date(${datestring}) AS TestDate, -- Set your test date here
-                date(${datestring}, 'start of month') AS FirstDayOfMonth,
-                date(${datestring}, 'start of month', '+1 month', '-1 day') AS LastDayOfMonth
+                date('${datestring}') AS TestDate, -- Set your test date here
+                date('${datestring}', 'start of month') AS FirstDayOfMonth,
+                date('${datestring}', 'start of month', '+1 month', '-1 day') AS LastDayOfMonth
             ),
             -- Extract transactions within the month
             MonthlyTransactions AS (
@@ -26,10 +25,10 @@ export class DatabaseService {
             -- Calculate monthly expense and income
             MonthlySummary AS (
               SELECT
-                'Monthly' AS Display,
-                'monthly' AS Key,
-                COALESCE(SUM(CASE WHEN CreditOrDebit = 2 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS Expense,
-                COALESCE(SUM(CASE WHEN CreditOrDebit = 1 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS Income
+                'Monthly' AS display,
+                'monthly' AS key,
+                COALESCE(SUM(CASE WHEN CreditOrDebit = 2 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS expense,
+                COALESCE(SUM(CASE WHEN CreditOrDebit = 1 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS income
               FROM MonthlyTransactions
             ),
             -- Extract today's transactions
@@ -42,10 +41,10 @@ export class DatabaseService {
             -- Calculate today's expense and income
             TodaySummary AS (
               SELECT
-                'Today' AS Display,
-                'today' AS Key,
-                COALESCE(SUM(CASE WHEN CreditOrDebit = 2 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS Expense,
-                COALESCE(SUM(CASE WHEN CreditOrDebit = 1 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS Income
+                'Today' AS display,
+                'today' AS key,
+                COALESCE(SUM(CASE WHEN CreditOrDebit = 2 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS expense,
+                COALESCE(SUM(CASE WHEN CreditOrDebit = 1 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS income
               FROM TodayTransactions
             )
             -- Combine results
