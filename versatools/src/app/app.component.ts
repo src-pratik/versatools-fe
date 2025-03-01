@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { MoneyTrackrDatabaseSetupService } from './features/moneytrackr/moneytrackrsqlite.service';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +9,10 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class AppComponent {
-  constructor() {}
+  constructor(private moneytrackrDBSetupService: MoneyTrackrDatabaseSetupService) { }
+
+  async ngOnInit(): Promise<void> {
+    if (Capacitor.isNativePlatform())
+      await this.moneytrackrDBSetupService.initializeDatabase(true);
+  }
 }
