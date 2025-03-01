@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite';
-import { SQLiteService } from 'src/app/shared/sqlite.service';
+import { AbstractSQLiteService } from 'src/app/shared/sqlite.service';
 
 @Injectable()
-export class GarageSQLiteService extends SQLiteService {
+export class GarageSQLiteService extends AbstractSQLiteService {
   constructor(sqliteConnection: SQLiteConnection) {
     super('versatools_garage', 3, sqliteConnection);
   }
