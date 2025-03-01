@@ -1,6 +1,6 @@
 import { SQLiteDBConnection, SQLiteConnection, CapacitorSQLite } from '@capacitor-community/sqlite';
 
-export class BaseSQLiteService {
+export abstract class SQLiteService {
   protected sqliteConnection: SQLiteConnection;
   protected db: SQLiteDBConnection | null = null;
   protected dbName: string;

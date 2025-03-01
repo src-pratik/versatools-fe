@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite';
-import { BaseSQLiteService } from 'src/app/shared/basesqllite.service';
+import { SQLiteService } from 'src/app/shared/sqlite.service';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class GarageSQLiteService extends BaseSQLiteService {
-  constructor() {
-    super('versatools_garage', 3, new SQLiteConnection(CapacitorSQLite));
+@Injectable()
+export class GarageSQLiteService extends SQLiteService {
+  constructor(sqliteConnection: SQLiteConnection) {
+    super('versatools_garage', 3, sqliteConnection);
   }
 
   protected override getMigrationScripts(version: number): string[] | null {

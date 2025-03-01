@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PluginResponse, SMS } from 'src/app/plugin';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SMSRetrievalService {
   async getSMSInbox(timestampMillis: number): Promise<PluginResponse> {
     try {

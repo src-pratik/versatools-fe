@@ -3,9 +3,7 @@ import { SMSRetrievalService } from './sms-retrieval.service';
 import { PluginResponse } from 'src/app/plugin';
 //import { SMSTransactionService } from './sms-transaction.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SMSProcessingService {
   private lastScanTimestamp: string | null = null;
 

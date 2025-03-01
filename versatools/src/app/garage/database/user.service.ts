@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from './user.model';
 import { GarageSQLiteService } from './garagesqlite.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class UserService {
   private tableName = 'users';
 
