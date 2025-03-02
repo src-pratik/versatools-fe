@@ -1,0 +1,20 @@
+.group {
+    overflow: hidden;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+.group-header {
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    vertical-align: middle;
+
+    padding: 5px;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+}
+
+.group-content {
+    padding: 5px;
+}

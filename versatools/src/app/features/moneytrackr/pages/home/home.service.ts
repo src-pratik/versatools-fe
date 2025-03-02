@@ -3,7 +3,7 @@ import { LoadingController, NavController, ToastController } from '@ionic/angula
 import { Observable, finalize, firstValueFrom, forkJoin, from, lastValueFrom, of } from 'rxjs';
 import { AbstractUIFeedbackService } from 'src/app/shared/uifeedback.service';
 import { DatabaseService } from '../../database.service';
-import { Transaction, TransactionSummary } from '../../models';
+import { Transaction, TransactionGroup, TransactionSummary } from '../../models';
 
 @Injectable()
 export class HomeService extends AbstractUIFeedbackService {
@@ -14,17 +14,30 @@ export class HomeService extends AbstractUIFeedbackService {
     super(loadingController, toastController);
   }
 
-  private getTransactionSummary(): Observable<any> {
+  private getTransactionSummary(): Observable<TransactionSummary[]> {
     let month = new Date().toLocaleString('default', { month: '2-digit' });
     let year = new Date().getFullYear().toString();
     return from(this.db.getSummary('09', '2023'));
   }
 
-  // private getTransactionRecent(): Observable<TransactionGroup[]> {
-  //   return this.http.get<TransactionGroup[]>(`${environment.apiBaseUrl}/transaction/recent`)
-  // }
+  private getTransactionRecent(): Observable<TransactionGroup[]> {
+    const now = new Date();
+    let maxDate: Date;
 
-  async onPageLoadAsync(): Promise<[summary: TransactionSummary[] | null, recent: any | null]> {
+    if (now.getDate() < 3) {
+      maxDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    } else {
+      maxDate = new Date(now);
+      maxDate.setDate(maxDate.getDate() - 3);
+    }
+
+    const startDate = maxDate.toISOString().split('T')[0];
+    const endDate = now.toISOString().split('T')[0];
+
+    return from(this.db.getTransactionRecent('2023-09-01', '2023-09-04'));
+  }
+
+  async onPageLoadAsync(): Promise<[summary: TransactionSummary[] | null, recent: TransactionGroup[] | null]> {
     if (this.enableLogs) {
       console.log('onPageLoadAsync called');
     }
@@ -32,8 +45,10 @@ export class HomeService extends AbstractUIFeedbackService {
     await loading.present();
 
     try {
+      const recentOb = this.getTransactionRecent();
+      const summaryOb = this.getTransactionSummary();
 
-      const summaryOb = await firstValueFrom(this.getTransactionSummary().pipe(
+      const output = await firstValueFrom(forkJoin([summaryOb, recentOb]).pipe(
         finalize(async () => {
           await loading.dismiss();
           if (this.enableLogs) {
@@ -41,18 +56,8 @@ export class HomeService extends AbstractUIFeedbackService {
           }
         })
       ));
-      // const recentOb = this.getTransactionRecent();
 
-      // const output = await firstValueFrom(forkJoin([summaryOb, recentOb]).pipe(
-      //     finalize(async () => {
-      //         await loading.dismiss();
-      //         if (this.enableLogs) {
-      //             console.log('onPageLoadAsync Finalized');
-      //         }
-      //     })
-      // ));
-
-      return [summaryOb as TransactionSummary[], null]; // Return summaryOb and null for recentOb since it is commented out.
+      return output;// Return summaryOb and null for recentOb since it is commented out.
 
     } catch (error) {
       if (this.enableLogs) {

@@ -22,11 +22,8 @@ export class HomePage implements OnInit {
 
   async onPageLoad() {
     let result = await this.homeService.onPageLoadAsync();
-    let data = [{ "display": "Monthly", "key": "monthly", "expense": "46408.31", "income": "0.00" },
-    { "display": "Today", "key": "today", "expense": "245", "income": "0.00" }]
-    this.transactionsummarydata = result[0];
-    //  this.transactionactivitydata = result[1]
-    //console.log(this.transactionsummarydata);
+    this.transactionsummarydata = result[0]
+    this.transactionactivitydata = result[1]
   }
 
   async handleRefresh(e: any) {

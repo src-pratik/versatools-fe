@@ -155,10 +155,10 @@ export abstract class AbstractSQLiteService {
     }
   }
 
-  async fetchRecordsUsingSQL(query: string): Promise<any[]> {
+  async fetchRecordsUsingSQL(query: string, values?: any[]): Promise<any[]> {
     if (!this.db) throw new Error('Database is not initialized');
     console.info(`Executing query: ${query}`);
-    const result = await this.db.query(query);
+    const result = await this.db.query(query, values);
     return result.values || [];
   }
 

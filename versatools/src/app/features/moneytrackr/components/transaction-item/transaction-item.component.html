@@ -1,0 +1,18 @@
+<ion-item class="item" lines="none" *ngIf="data" (click)="handleTransactionItemClick(data)">
+  <ion-avatar slot="start" [style.background-color]="data.category.color" class="icon-container">
+    <ion-icon [name]="data.category.iconOutline" class="icon"></ion-icon>
+  </ion-avatar>
+  <ion-label class="label flex-container">
+    <ion-text class="line" style="margin-bottom: 5px;">
+      <h2>{{ data.category.name }}</h2>
+    </ion-text>
+    <ion-text class="line" *ngIf="data.remarks">{{ data.remarks }}</ion-text>
+    <ion-text class="line" *ngIf="data.merchant">{{ data.merchant.name }}</ion-text>
+    <ion-text class="line" *ngIf="data.account">{{ data.account.name }}</ion-text>
+  </ion-label>
+  <div class="value-container">
+    <ion-label class="value" [color]="data.amount > 0 ? 'success' : 'danger'">
+      {{ data.amount | currency: 'INR' }}
+    </ion-label>
+  </div>
+</ion-item>

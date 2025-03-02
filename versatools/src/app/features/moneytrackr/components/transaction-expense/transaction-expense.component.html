@@ -1,0 +1,105 @@
+<ion-grid>
+  <ion-row>
+    <ion-col *ngIf="viewModel && viewModel.expense">
+      <ion-item lines="none">
+        <div slot="start" style="font-size: 32px;margin-left:5px;margin-right:25px;">
+          <i class="fa-solid fa-indian-rupee-sign"></i>
+        </div>
+        <ion-input class="ion-text-end" label="Amount" labelPlacement="start" type="number" placeholder="00.00"
+          [(ngModel)]="viewModel.expense.amount" [clearInput]="true"></ion-input>
+        <!-- <ion-input class="ion-text-end" label="Amount" labelPlacement="start" shape="round" type="number"
+          placeholder="00.00" [(ngModel)]="input.amount"
+          (ionBlur)="input.amount = ((input.amount === '' || input.amount === null) ? '00.00' : input.amount)"
+          [value]="formatAmount(input.amount)" debounce="500" (ngModelChange)="onInputChange($event)"></ion-input> -->
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="viewModel && viewModel.expense && viewModel.expense.category">
+    <ion-col>
+      <ion-item lines="none">
+        <ion-icon [name]="viewModel.expense.category.icon" slot="start" size="large"></ion-icon>
+        <ion-input class="ion-text-end" labelPlacement="start" label="Category"
+          [value]="viewModel.expense.category.name" [readonly]="true"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="viewModel && viewModel.categories">
+    <ion-col>
+      <div class="horizontal-scroll">
+        <app-category-list-horizontal [categories]="viewModel.categories"
+          (onSelect)="onCategorySelect($event)"></app-category-list-horizontal>
+      </div>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="viewModel && viewModel.expense && viewModel.expense.merchant">
+    <ion-col>
+      <ion-item lines="none">
+        <ion-icon name="business-outline" slot="start" size="large"></ion-icon>
+        <ion-input class="ion-text-end" labelPlacement="start" label="Merchant"
+          [value]="viewModel.expense.merchant.name" [readonly]="true"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="viewModel && viewModel.expense">
+    <ion-col>
+      <ion-item lines="none">
+        <ion-icon name="calendar-number-outline" slot="start" size="large"></ion-icon>
+        <ion-label position="start">Date</ion-label>
+        <ion-datetime-button presentation="date" datetime="date"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="date" presentation="date" [showDefaultButtons]="true" [value]="viewModel.expense.date"
+              max="{{ viewModel.maxdate }}" (ionChange)="onDateChange($event)"></ion-datetime>
+          </ng-template>"
+        </ion-modal>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="viewModel && viewModel.expense && viewModel.accounts">
+    <ion-col>
+      <ion-item lines="none">
+        <ion-icon name="cash-outline" slot="start" size="large"></ion-icon>
+        <ion-select *ngIf="viewModel.expense.account" [(ngModel)]="viewModel.expense.account" label="Account"
+          labelPlacement="start">
+          <ion-select-option *ngFor="let account of viewModel.accounts" [value]="account">
+            {{ account.name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="viewModel && viewModel.expense">
+    <ion-col>
+      <ion-item lines="none">
+        <ion-icon slot="start" size="large" name="document-text-outline"></ion-icon>
+        <ion-input class="ion-text-end" labelPlacement="start" label="Remarks" [value]="viewModel.expense.remarks"
+          maxlength="20" [(ngModel)]="viewModel.expense.remarks"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="viewModel && viewModel.expense && viewModel.purposes">
+    <ion-col>
+      <ion-item lines="none">
+        <ion-icon name="wallet-outline" slot="start" size="large"></ion-icon>
+        <ion-select *ngIf="viewModel.expense.purpose" [(ngModel)]="viewModel.expense.purpose" label="Type"
+          labelPlacement="start">
+          <ion-select-option *ngFor="let purpose of viewModel.purposes" [value]="purpose">
+            {{ purpose }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+
+</ion-grid>
+
+
+
+<!-- TE expense value = {{viewModel | json}} -->
