@@ -5,8 +5,8 @@ export class Helper {
         return ["Expense", "Income", "Investment", "Loan"];
     }
 
-    public static YearList():string[]{
-        return ["2024", "2023"];
+    public static YearList(): string[] {
+        return ["2025", "2024", "2023"];
     }
 
     public static MonthListForYear(year?: number): { index: number, month: string, value: string }[] {
@@ -22,12 +22,12 @@ export class Helper {
 
             if (monthDate <= today) {
                 const month = currentMonth === monthIndex ? 'This Month ' : monthName;
-                monthValuePairs.push({ index: monthIndex, month: month, value: monthName });
+                monthValuePairs.push({ index: monthIndex, month: month, value: String(monthIndex).padStart(2, '0') });
             }
         }
         return monthValuePairs.sort((a, b) => a.index - b.index);
     }
- 
+
     private constructor() {
 
     }

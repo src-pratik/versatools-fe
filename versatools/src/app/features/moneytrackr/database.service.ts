@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { MoneyTrackrDatabaseService } from './moneytrackrsqlite.service';
-import { Transaction, TransactionGroup } from './models';
+import { Category, Transaction, TransactionGroup, TransactionSummary } from './models';
+import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class DatabaseService {
 
   constructor(private dbService: MoneyTrackrDatabaseService) { }
-  async getSummary(month: string, year: string): Promise<any> {
+
+  async getSummaryForMonthAndToday(month: string, year: string): Promise<any> {
     const datestring = `${year}-${month}-01`;
 
     const sql = `-- Define variables with a test date
@@ -56,7 +58,60 @@ export class DatabaseService {
     return this.dbService.fetchRecordsUsingSQL(sql);
   }
 
-  async getTransactionRecent(startDate: string, endDate: string): Promise<TransactionGroup[]> {
+  async getSummaryForMonth(month: string, year: string, category?: string | null): Promise<TransactionSummary[]> {
+    const datestring = `${year}-${month}-01`;
+
+    let categoryCondition = '';
+    if (category) {
+      categoryCondition = `AND CategoryId = '${category}'`;
+    }
+
+    const sql = `-- Define variables with a test date
+            WITH DateVariables AS (
+              SELECT
+                date('${datestring}') AS TestDate, -- Set your test date here
+                date('${datestring}', 'start of month') AS FirstDayOfMonth,
+                date('${datestring}', 'start of month', '+1 month', '-1 day') AS LastDayOfMonth
+            ),
+            -- Extract transactions within the month
+            MonthlyTransactions AS (
+              SELECT *
+              FROM "Transaction"
+              WHERE date(Date) BETWEEN (SELECT FirstDayOfMonth FROM DateVariables) AND (SELECT LastDayOfMonth FROM DateVariables)
+                AND (Purpose = 1 OR Purpose = 2) -- Assuming 1 is for Expense and 2 is for Income
+                ${categoryCondition} -- Category filter if provided
+            ),
+            -- Calculate monthly expense and income
+            MonthlySummary AS (
+              SELECT
+                'Monthly' AS display,
+                'monthly' AS key,
+                COALESCE(SUM(CASE WHEN CreditOrDebit = 2 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS expense,
+                COALESCE(SUM(CASE WHEN CreditOrDebit = 1 THEN CAST(Amount AS REAL) ELSE 0 END), 0) AS income
+              FROM MonthlyTransactions
+            )            
+            SELECT * FROM MonthlySummary`;
+
+    // Fetch records from the database
+    const summaryData = await this.dbService.fetchRecordsUsingSQL(sql);
+
+    // Map the fetched data to TransactionSummary properties
+    const summary: TransactionSummary = {
+      display: summaryData[0]?.display || '',
+      key: summaryData[0]?.key || '',
+      expense: summaryData[0]?.expense || 0,
+      income: summaryData[0]?.income || 0
+    };
+
+    return [summary];
+  }
+
+  async getTransactionsForDuration(startDate: string, endDate: string, category?: string | null): Promise<TransactionGroup[]> {
+    let categoryCondition = '';
+    if (category) {
+      categoryCondition = `AND c.Id = '${category}'`;
+    }
+
     const sql = `
           SELECT 
               t.Id as id,
@@ -78,9 +133,11 @@ export class DatabaseService {
           FROM "Transaction" t
           LEFT JOIN "Category" c ON t.CategoryId = c.Id
           LEFT JOIN "Account" a ON t.AccountId = a.Id
-          WHERE t.Date BETWEEN ? AND ?
+          WHERE t.Date BETWEEN ? AND ? ${categoryCondition}
           AND (t.Purpose = '2' OR t.Purpose = '1')
           ORDER BY t.Date DESC;`;
+
+
 
     const result = await this.dbService.fetchRecordsUsingSQL(sql, [startDate, endDate])
     // Map the result to Transaction objects
@@ -127,6 +184,31 @@ export class DatabaseService {
     }));
 
     return groupedResult;
+
+  }
+
+  enableLogs: boolean = false;
+  categories: Category[] | null = null;
+
+  public async getCategoryLookup(refresh: boolean = false): Promise<Observable<Category[]>> {
+    if (this.categories && !refresh) {
+      if (this.enableLogs) {
+        console.log('getCategoryLookup cached data found');
+      }
+      return Promise.resolve(of(this.categories));
+    }
+
+    const result = await this.dbService.fetchRecords('category');
+    this.categories = (result || []).map((row) => ({
+      id: row.Id.toString(),
+      icon: row.Icon,
+      iconOutline: row.IconOutline,
+      color: row.Color,
+      name: row.Name,
+      order: row.Order
+    } as Category));
+
+    return Promise.resolve(of(this.categories));
 
   }
 }

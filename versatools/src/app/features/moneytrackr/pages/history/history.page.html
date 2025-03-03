@@ -1,0 +1,74 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-grid [fixed]=" true">
+    <ion-row>
+      <ion-col>
+        <ion-item lines="none">
+          <ion-icon name="calendar-outline" slot="start" size="large"></ion-icon>
+          <ion-select [(ngModel)]="yearselected" label=" " labelPlacement="start" (ionChange)="onSelectYearChange()">
+            <ion-select-option *ngFor="let value of yearslist" [value]="value">
+              {{ value }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item lines="none">
+          <ion-icon name="calendar-outline" slot="start" size="large"></ion-icon>
+          <ion-select [(ngModel)]="monthselected" label=" " labelPlacement="start" (ionChange)="onFilterChange()">
+            <ion-select-option *ngFor="let value of monthslist" [value]="value.value">
+              {{ value.month }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="categorylist">
+      <ion-col>
+        <ion-item lines="none">
+          <ion-icon [style.color]="categoryselected?.color" slot="start" [name]="categoryselected?.icon"
+            size="large"></ion-icon>
+
+          <ion-select [(ngModel)]="categoryselected" label=" " labelPlacement="start" (ionChange)="onFilterChange()">
+            <ion-select-option *ngFor="let value of categorylist" [value]="value">
+              {{ value.name}}
+            </ion-select-option>
+            <ion-select-option [value]="valueNull()">
+              All
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="transactionsummarydata">
+      <ion-col>
+        <app-transaction-summary-group [data]="transactionsummarydata"></app-transaction-summary-group>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="transactionactivitydata">
+      <ion-col>
+        <app-transaction-item-group *ngFor="let group of transactionactivitydata" [title]="group.display"
+          [data]="group.transactions" (onSelect)="onTransactionClick($event)"></app-transaction-item-group>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="!transactionactivitydata">
+      <ion-col>
+        No Data Found
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

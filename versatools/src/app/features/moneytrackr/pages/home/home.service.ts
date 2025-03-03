@@ -17,7 +17,7 @@ export class HomeService extends AbstractUIFeedbackService {
   private getTransactionSummary(): Observable<TransactionSummary[]> {
     let month = new Date().toLocaleString('default', { month: '2-digit' });
     let year = new Date().getFullYear().toString();
-    return from(this.db.getSummary('09', '2023'));
+    return from(this.db.getSummaryForMonthAndToday('09', '2023'));
   }
 
   private getTransactionRecent(): Observable<TransactionGroup[]> {
@@ -34,7 +34,7 @@ export class HomeService extends AbstractUIFeedbackService {
     const startDate = maxDate.toISOString().split('T')[0];
     const endDate = now.toISOString().split('T')[0];
 
-    return from(this.db.getTransactionRecent('2023-09-01', '2023-09-04'));
+    return from(this.db.getTransactionsForDuration('2023-09-01', '2023-09-04'));
   }
 
   async onPageLoadAsync(): Promise<[summary: TransactionSummary[] | null, recent: TransactionGroup[] | null]> {

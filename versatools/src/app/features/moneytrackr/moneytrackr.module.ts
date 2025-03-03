@@ -7,11 +7,13 @@ import { HomePage } from './pages/home/home.page';
 import { IonicModule } from '@ionic/angular';
 import { HomeService } from './pages/home/home.service';
 import { ComponentsModule } from './components/components.module';
+import { HistoryPage } from './pages/history/history.page';
+import { HistoryService } from './pages/history/history.service';
 
 
 
 @NgModule({
-  declarations: [HomePage],
+  declarations: [HomePage, HistoryPage],
   imports: [
     CommonModule,
     FormsModule,
@@ -21,7 +23,8 @@ import { ComponentsModule } from './components/components.module';
   ],
   providers: [
     DatabaseService,
-    HomeService
+    HomeService,
+    HistoryService
   ]
 })
 export class MoneyTrackrModule { }
