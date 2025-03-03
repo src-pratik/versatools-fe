@@ -9,11 +9,13 @@ import { HomeService } from './pages/home/home.service';
 import { ComponentsModule } from './components/components.module';
 import { HistoryPage } from './pages/history/history.page';
 import { HistoryService } from './pages/history/history.service';
+import { AnalyticsService } from './pages/analytics/analytics.service';
+import { AnalyticsPage } from './pages/analytics/analytics.page';
 
 
 
 @NgModule({
-  declarations: [HomePage, HistoryPage],
+  declarations: [HomePage, HistoryPage, AnalyticsPage],
   imports: [
     CommonModule,
     FormsModule,
@@ -24,7 +26,8 @@ import { HistoryService } from './pages/history/history.service';
   providers: [
     DatabaseService,
     HomeService,
-    HistoryService
+    HistoryService,
+    AnalyticsService
   ]
 })
 export class MoneyTrackrModule { }

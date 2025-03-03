@@ -1,0 +1,62 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Analytics</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Analytics</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-grid [fixed]=" true">
+    <ion-row>
+      <ion-col>
+        <ion-item lines="none">
+          <ion-icon name="calendar-outline" slot="start" size="large"></ion-icon>
+          <ion-select [(ngModel)]="yearselected" label=" " labelPlacement="start" (ionChange)="onSelectYearChange()">
+            <ion-select-option *ngFor="let value of yearslist" [value]="value">
+              {{ value }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item lines="none">
+          <ion-icon name="calendar-outline" slot="start" size="large"></ion-icon>
+          <ion-select [(ngModel)]="monthselected" label=" " labelPlacement="start" (ionChange)="onSelectMonthChange()">
+            <ion-select-option *ngFor="let value of monthslist" [value]="value.value">
+              {{ value.month }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card color="light" *ngIf="viewModel">
+          <ion-card-header *ngIf="viewModel.showHeader || viewModel.showSubHeader">
+            <ion-card-title *ngIf="viewModel.showHeader">{{viewModel.header}}</ion-card-title>
+            <ion-card-subtitle *ngIf="viewModel.showSubHeader">{{viewModel.subHeader}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <app-category-grouped [data]="viewModel" (onSelect)="onRowClick($event)"></app-category-grouped>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="!viewModel">
+      <ion-col>
+        No Data Found
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

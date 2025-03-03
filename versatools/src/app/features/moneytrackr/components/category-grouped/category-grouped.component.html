@@ -1,0 +1,12 @@
+<ion-list [inset]="true" *ngIf="viewModel">
+  <ion-item *ngFor="let row of viewModel.rows" (click)="onClick(row)">
+    <ion-icon [style.color]="row.category.color" slot="start" [name]="row.category.icon" size="large"></ion-icon>
+    <ion-label>{{row.category.name}}</ion-label>
+    <ion-label slot="end"> {{ row.value | currency: 'INR' }}</ion-label>
+  </ion-item>
+  <ion-item *ngIf="viewModel.showTotal">
+    <ion-label style="font-weight: bold;">Total</ion-label>
+    <ion-icon slot="start" name="" size="large"></ion-icon>
+    <ion-label style="font-weight: bold;" slot="end"> {{ viewModel.total | currency: 'INR' }}</ion-label>
+  </ion-item>
+</ion-list>

@@ -6,6 +6,7 @@ import { TransactionSummaryComponent } from './transaction-summary/transaction-s
 import { TransactionSummaryGroupComponent } from './transaction-summary-group/transaction-summary-group.component';
 import { TransactionItemComponent } from './transaction-item/transaction-item.component';
 import { TransactionItemGroupComponent } from './transaction-item-group/transaction-item-group.component';
+import { CategoryGroupedComponent } from './category-grouped/category-grouped.component';
 // import { TransactionItemComponent } from './transaction-item/transaction-item.component';
 // import { TransactionItemGroupComponent } from './transaction-item-group/transaction-item-group.component';
 // import { CategoryListHorizontalComponent } from './category-list-horizontal/category-list-horizontal.component';
@@ -20,7 +21,8 @@ import { TransactionItemGroupComponent } from './transaction-item-group/transact
     TransactionSummaryComponent,
     TransactionSummaryGroupComponent,
     TransactionItemComponent,
-    TransactionItemGroupComponent
+    TransactionItemGroupComponent,
+    CategoryGroupedComponent
     //  TransactionItemComponent, TransactionItemGroupComponent,
     //CategoryListHorizontalComponent, TransactionExpenseComponent, CategoryGroupedComponent
   ],
@@ -29,7 +31,8 @@ import { TransactionItemGroupComponent } from './transaction-item-group/transact
   ],
   exports: [
     TransactionSummaryGroupComponent,
-    TransactionItemGroupComponent
+    TransactionItemGroupComponent,
+    CategoryGroupedComponent
     //  TransactionItemGroupComponent, CategoryListHorizontalComponent, TransactionExpenseComponent, CategoryGroupedComponent
   ]
 })

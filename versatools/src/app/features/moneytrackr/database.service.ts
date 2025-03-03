@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MoneyTrackrDatabaseService } from './moneytrackrsqlite.service';
-import { Category, Transaction, TransactionGroup, TransactionSummary } from './models';
+import { Category, ReportCategoryGroupedRow, ReportCategoryGroupedViewModel, Transaction, TransactionGroup, TransactionSummary } from './models';
 import { Observable, of } from 'rxjs';
 
 @Injectable()
@@ -210,5 +210,64 @@ export class DatabaseService {
 
     return Promise.resolve(of(this.categories));
 
+  }
+
+  public async getMonthlyExpenseReport(month: string, year: string): Promise<ReportCategoryGroupedViewModel> {
+    const datestring = `${year}-${month}-01`;
+
+    const sql = `WITH 
+    DateVariables AS (
+          SELECT 
+              date('${datestring}') AS TestDate, 
+              date('${datestring}', 'start of month') AS FirstDayOfMonth,
+              date('${datestring}', 'start of month', '+1 month', '-1 day') AS LastDayOfMonth),
+    Summary AS (
+        SELECT 
+            SUM(t.Amount) AS amount, 
+            t.CategoryId AS categoryId
+        FROM "Transaction" AS t
+        WHERE date(t.Date) 
+            BETWEEN (SELECT FirstDayOfMonth FROM DateVariables) 
+                AND (SELECT LastDayOfMonth FROM DateVariables)
+            AND t.Purpose = '1'
+        GROUP BY t.CategoryId)
+
+    SELECT 
+        s.amount AS amount, 
+        c.Id AS id, 
+        c.Icon AS icon, 
+        c.color AS color, 
+        c.name AS name, 
+        c.status AS status, 
+        c.purpose AS purpose, 
+        c.IconOutline AS iconOutline  
+    FROM Summary AS s
+    LEFT JOIN "Category" AS c ON s.categoryId = c.Id;`;
+
+    const reportData = await this.dbService.fetchRecordsUsingSQL(sql);
+
+    // Transform SQL results into `ReportCategoryGroupedRow`
+    const rows: ReportCategoryGroupedRow[] = reportData.map((item: any) => ({
+      value: item.amount ?? 0, // Ensure value is never null
+      category: {
+        id: item.id,
+        name: item.name,
+        icon: item.icon,
+        iconOutline: item.iconOutline,
+        color: item.color,
+        order: 1 
+      } as Category
+    }));
+
+    // Construct the final report model
+    return {
+      rows,
+      header: "Expense Summary",
+      subheader: new Date(datestring).toLocaleString('default', { month: 'long', year: 'numeric' }),
+      showHeader: true,
+      showSubHeader: true,
+      showTotal: true,
+      total: rows.reduce((sum, row) => sum + (row.value ?? 0), 0)
+    };
   }
 }
