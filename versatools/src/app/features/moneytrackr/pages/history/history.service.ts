@@ -1,8 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Observable, finalize, firstValueFrom, forkJoin, from, lastValueFrom, of } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { AbstractUIFeedbackService } from 'src/app/shared/uifeedback.service';
 import { Category, Transaction, TransactionGroup, TransactionSummary } from '../../models';
 import { DatabaseService } from '../../database.service';
@@ -41,41 +39,38 @@ export class HistoryService extends AbstractUIFeedbackService {
   }
 
   async getCategoryListAsync(): Promise<Category[] | null> {
-
-    if (this.enableLogs)
+    if (this.enableLogs) {
       console.log('getCategoryListAsync called');
+    }
 
     const loading = await this.loaderLoadingData();
     await loading.present();
+
     try {
-      var resultOb = this.db.getCategoryLookup(false);
-      var output: Category[] = await firstValueFrom((await resultOb).pipe(
-        finalize(async () => {
-          await loading.dismiss();
-          if (this.enableLogs) {
-            console.log('getCategoryListAsync Finalized');
-          }
-        })
-      ));
+      const output: Category[] = await this.db.getCategoryLookup(false); // Directly await the Promise
 
       return output;
-
     } catch (error) {
       if (this.enableLogs) {
-        console.error('Error in onPageLoadAsync:', error);
+        console.error('Error in getCategoryListAsync:', error);
       }
       return null;
     } finally {
+      await loading.dismiss(); // Ensure loading is dismissed in all cases
+      if (this.enableLogs) {
+        console.log('getCategoryListAsync Finalized');
+      }
     }
   }
+
 
   async onFetchDataAsync(month: string, year: string, category: string | undefined | null): Promise<[summary: TransactionSummary[] | null, recent: TransactionGroup[] | null]> {
 
     if (this.enableLogs) {
       console.log('onFetchDataAsync called', category);
     }
-     const loading = await this.loaderLoadingData();
-     await loading.present();
+    const loading = await this.loaderLoadingData();
+    await loading.present();
 
     try {
 
@@ -106,7 +101,7 @@ export class HistoryService extends AbstractUIFeedbackService {
 
 
       return output;
-     // return [null, null]
+      // return [null, null]
 
     } catch (error) {
       if (this.enableLogs) {

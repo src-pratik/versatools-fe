@@ -1,0 +1,61 @@
+  .categories-container {
+      display: flex;
+      white-space: nowrap;
+  }
+
+  .category-item-icon {
+      font-size: 24px;
+      color: white;
+  }
+
+  .category-item-text {
+      font-size: 18px;
+      color: white;
+  }
+
+  .category-item {
+      flex: 0 0 auto;
+      margin-right: 10px;
+      text-align: justify;
+      width: 48px;
+      height: 48px;
+      border-radius: 35%;
+      background-color: green;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .category-container {
+      flex: 0 0 auto; // makes the size remain same even if the viewport size increases or decreases
+      margin-right: 10px;
+      width: 72px;
+      height: 72px;
+      display: flex;
+      flex-direction: column; //makes elements stashed one above the other
+      justify-content: center;
+      align-items: center;
+  }
+
+  .category-icon-container {
+      flex: 0 0 auto;
+      width: 48px;
+      height: 48px;
+      border-radius: 35%;
+      background-color: burlywood;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .category-icon {
+      padding: 10px;
+      width: 42px;
+      height: 42px;
+      color: white;
+  }
+
+  .category-text {
+      font-size: 10px;
+
+  }

@@ -1,0 +1,8 @@
+<div class="categories-container">
+  <div class="category-container" *ngFor="let category of categories" (click)="onClick(category)">
+    <div class="category-icon-container" [style.background-color]="category.color">
+      <ion-icon class="category-icon" [name]="category.iconOutline"></ion-icon>
+    </div>
+    <div class="category-text">{{category.name}}</div>
+  </div>
+</div>

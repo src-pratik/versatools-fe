@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Expense
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid [fixed]=" true">
+    <ion-row>
+      <ion-col>
+        <app-transaction-expense [expense]="viewModel"></app-transaction-expense>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+
+        <ion-button expand="block" [disabled]="!isValid()" (click)="onSaveClick()">Save</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" fill="outline" (click)="onCancelClick()">Cancel</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

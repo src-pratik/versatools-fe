@@ -7,6 +7,8 @@ import { TransactionSummaryGroupComponent } from './transaction-summary-group/tr
 import { TransactionItemComponent } from './transaction-item/transaction-item.component';
 import { TransactionItemGroupComponent } from './transaction-item-group/transaction-item-group.component';
 import { CategoryGroupedComponent } from './category-grouped/category-grouped.component';
+import { TransactionExpenseComponent } from './transaction-expense/transaction-expense.component';
+import { CategoryListHorizontalComponent } from './category-list-horizontal/category-list-horizontal.component';
 // import { TransactionItemComponent } from './transaction-item/transaction-item.component';
 // import { TransactionItemGroupComponent } from './transaction-item-group/transaction-item-group.component';
 // import { CategoryListHorizontalComponent } from './category-list-horizontal/category-list-horizontal.component';
@@ -22,9 +24,11 @@ import { CategoryGroupedComponent } from './category-grouped/category-grouped.co
     TransactionSummaryGroupComponent,
     TransactionItemComponent,
     TransactionItemGroupComponent,
-    CategoryGroupedComponent
+    CategoryGroupedComponent, 
+    TransactionExpenseComponent,
+    CategoryListHorizontalComponent
     //  TransactionItemComponent, TransactionItemGroupComponent,
-    //CategoryListHorizontalComponent, TransactionExpenseComponent, CategoryGroupedComponent
+    //, TransactionExpenseComponent, CategoryGroupedComponent
   ],
   imports: [
     CommonModule, FormsModule, IonicModule,
@@ -32,7 +36,9 @@ import { CategoryGroupedComponent } from './category-grouped/category-grouped.co
   exports: [
     TransactionSummaryGroupComponent,
     TransactionItemGroupComponent,
-    CategoryGroupedComponent
+    CategoryGroupedComponent,
+    TransactionExpenseComponent,
+    CategoryListHorizontalComponent
     //  TransactionItemGroupComponent, CategoryListHorizontalComponent, TransactionExpenseComponent, CategoryGroupedComponent
   ]
 })

@@ -1,12 +1,124 @@
 import { Injectable } from '@angular/core';
 import { MoneyTrackrDatabaseService } from './moneytrackrsqlite.service';
-import { Category, ReportCategoryGroupedRow, ReportCategoryGroupedViewModel, Transaction, TransactionGroup, TransactionSummary } from './models';
+import { Account, Category, Expense, ExpenseViewModel, ReportCategoryGroupedRow, ReportCategoryGroupedViewModel, Transaction, TransactionGroup, TransactionSummary } from './models';
 import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class DatabaseService {
+  enableLogs: boolean = false;
+  categories: Category[] | null = null;
+  private accounts: Account[] | null = null;
 
   constructor(private dbService: MoneyTrackrDatabaseService) { }
+
+  async getAccounts(refresh: boolean = false): Promise<Account[] | null> {
+    // If cached data exists and refresh is not requested, return cached accounts
+    if (this.accounts && !refresh) {
+      return this.accounts;
+    }
+
+    // Fetch from database
+    const sql = `SELECT Id AS id, Name AS name, "Order" AS "order" FROM "Account" WHERE Status = 1`;
+    const result = await this.dbService.fetchRecordsUsingSQL(sql);
+    this.accounts = result.map((row: any) => ({
+      id: row.id.toString(),
+      name: row.name,
+      order: row.order,
+    }));
+    return this.accounts;
+
+  }
+
+  async getExpense(expenseId: string): Promise<Expense | null> {
+    if (expenseId === '')
+      return null;
+
+    const sql = `
+        SELECT 
+          t.Id AS id, 
+          t.Amount AS amount, 
+          t.Remarks AS remarks, 
+          t.Date AS date, 
+          t.Purpose AS purpose, 
+          c.Id AS categoryId, 
+          c.Name AS categoryName, 
+          c.Icon AS categoryIcon, 
+          c.IconOutline AS categoryIconOutline, 
+          c.Color AS categoryColor, 
+          a.Id AS accountId, 
+          a.Name AS accountName, 
+          a.Order AS accountOrder, 
+          m.Id AS merchantId, 
+          m.Name AS merchantName
+        FROM "Transaction" t
+        LEFT JOIN "Category" c ON t.CategoryId = c.Id
+        LEFT JOIN "Account" a ON t.AccountId = a.Id
+        LEFT JOIN "Merchant" m ON t.Beneficiary = m.Id
+        WHERE t.Id = ? 
+        LIMIT 1;
+      `;
+
+    const results = await this.dbService.fetchRecordsUsingSQL(sql, [expenseId]);
+
+    if (!results || results.length === 0) {
+      return null; // Return null if no matching record is found
+    }
+
+    const result = results[0]; // Get the first matching transaction
+
+    return {
+      id: result.id,
+      amount: parseFloat(result.amount),
+      remarks: result.remarks || '',
+      date: result.date,
+      purpose: result.purpose,
+      category: result.categoryId
+        ? {
+          id: result.categoryId,
+          name: result.categoryName,
+          icon: result.categoryIcon,
+          iconOutline: result.categoryIconOutline,
+          color: result.categoryColor,
+          order: 0, // Assuming order is not required from DB
+        }
+        : null,
+      account: result.accountId
+        ? {
+          id: result.accountId,
+          name: result.accountName,
+          order: result.accountOrder,
+        }
+        : null,
+      merchant: result.merchantId
+        ? {
+          id: result.merchantId,
+          name: result.merchantName,
+        }
+        : null,
+    };
+
+  }
+
+
+  async saveTransaction(expense: Expense): Promise<any | null> {
+    const sql = `
+    INSERT INTO "Transaction" 
+    ("Amount", "Remarks", "Date", "CategoryId", "AccountId", "Purpose", "Status", "CreateDate", "UpdatedOn", "UserId") 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    const values = [
+      expense.amount,
+      expense.remarks ?? null,
+      expense.date, // Ensure this is in 'YYYY-MM-DD' format
+      expense.category?.id ?? null,
+      expense.account?.id ?? null,
+      expense.purpose ?? null,
+      1, // Assuming 1 means 'Active' status
+      new Date().toISOString(), // CreateDate
+      new Date().toISOString(), // UpdatedOn
+      null // UserId (modify as needed)
+    ];
+  }
 
   async getSummaryForMonthAndToday(month: string, year: string): Promise<any> {
     const datestring = `${year}-${month}-01`;
@@ -187,15 +299,12 @@ export class DatabaseService {
 
   }
 
-  enableLogs: boolean = false;
-  categories: Category[] | null = null;
-
-  public async getCategoryLookup(refresh: boolean = false): Promise<Observable<Category[]>> {
+  public async getCategoryLookup(refresh: boolean = false): Promise<Category[]> {
     if (this.categories && !refresh) {
       if (this.enableLogs) {
         console.log('getCategoryLookup cached data found');
       }
-      return Promise.resolve(of(this.categories));
+      return this.categories;
     }
 
     const result = await this.dbService.fetchRecords('category');
@@ -208,7 +317,7 @@ export class DatabaseService {
       order: row.Order
     } as Category));
 
-    return Promise.resolve(of(this.categories));
+    return this.categories;
 
   }
 
@@ -255,7 +364,7 @@ export class DatabaseService {
         icon: item.icon,
         iconOutline: item.iconOutline,
         color: item.color,
-        order: 1 
+        order: 1
       } as Category
     }));
 

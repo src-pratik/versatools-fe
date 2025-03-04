@@ -8,7 +8,7 @@ import { Helper } from '../../helper';
   selector: 'app-transaction-expense',
   templateUrl: './transaction-expense.component.html',
   styleUrls: ['./transaction-expense.component.scss'],
-  standalone:false
+  standalone: false
 })
 export class TransactionExpenseComponent implements OnInit, OnChanges {
 

@@ -11,11 +11,13 @@ import { HistoryPage } from './pages/history/history.page';
 import { HistoryService } from './pages/history/history.service';
 import { AnalyticsService } from './pages/analytics/analytics.service';
 import { AnalyticsPage } from './pages/analytics/analytics.page';
+import { ExpensePage } from './pages/expense/expense.page';
+import { ExpenseService } from './pages/expense/expense.service';
 
 
 
 @NgModule({
-  declarations: [HomePage, HistoryPage, AnalyticsPage],
+  declarations: [HomePage, HistoryPage, AnalyticsPage, ExpensePage],
   imports: [
     CommonModule,
     FormsModule,
@@ -27,7 +29,8 @@ import { AnalyticsPage } from './pages/analytics/analytics.page';
     DatabaseService,
     HomeService,
     HistoryService,
-    AnalyticsService
+    AnalyticsService,
+    ExpenseService
   ]
 })
 export class MoneyTrackrModule { }
