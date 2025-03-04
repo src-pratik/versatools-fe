@@ -7,9 +7,26 @@ import { ExpensePage } from './pages/expense/expense.page';
 
 const routes: Routes = [
   {
+    path: 'expense',
+    loadChildren: () => import('./pages/expense/expense.module').then(m => m.ExpensePageModule)
+  },
+  {
+    path: 'analytics',
+    loadChildren: () => import('./pages/analytics/analytics.module').then(m => m.AnalyticsPageModule)
+  },
+  {
+    path: 'history',
+    loadChildren: () => import('./pages/history/history.module').then(m => m.HistoryPageModule)
+  },
+  {
+    path: 'home',
+    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
+  },
+  {
     path: '',
-    component: ExpensePage
-  }
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
 ];
 
 @NgModule({
