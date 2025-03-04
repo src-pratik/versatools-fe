@@ -1,6 +1,15 @@
   .categories-container {
       display: flex;
       white-space: nowrap;
+      overflow-x: auto;
+      /* Enables horizontal scrolling */
+      scroll-behavior: smooth;
+      /* Optional: Adds smooth scrolling */
+  }
+
+  /* Optional: Hide scrollbar in WebKit browsers */
+  .categories-container::-webkit-scrollbar {
+      display: none;
   }
 
   .category-item-icon {
