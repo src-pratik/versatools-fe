@@ -5,11 +5,12 @@ import { IonicModule } from '@ionic/angular';
 import { ComponentsModule } from './components/components.module';
 import { DatabaseService } from './database.service';
 import { MoneyTrackrRoutingModule } from './moneytrackr-routing.module';
+import { TabsPage } from './tabs/tabs.page';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [TabsPage],
   imports: [
     CommonModule,
     FormsModule,

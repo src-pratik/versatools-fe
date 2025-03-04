@@ -45,7 +45,7 @@ export class AnalyticsService extends AbstractUIFeedbackService {
   }
 
   async onRowClick(month: string, year: string, category: string) {
-    this.navCtrl.navigateForward('/tabs/history', {
+    this.navCtrl.navigateForward('/moneytrackr/tabs/history', {
       state: {
         data: {
           month: month,
@@ -55,8 +55,6 @@ export class AnalyticsService extends AbstractUIFeedbackService {
       }
     });
   }
-
-
 }
 
 
