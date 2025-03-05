@@ -86,7 +86,7 @@ export class ExpenseService extends AbstractUIFeedbackService {
   }
 
   async onCancelClick() {
-    await this.navCtrl.navigateRoot("/tabs/home");
+    await this.navCtrl.navigateRoot("/moneytrackr/tabs/home");
   }
 
   formatNumberString(input: string): string {

@@ -8,7 +8,7 @@ import { ReportCategoryGroupedViewModel } from '../../models';
 @Injectable()
 export class AnalyticsService extends AbstractUIFeedbackService {
 
-  enableLogs: boolean = false;
+  enableLogs: boolean = true;
 
   constructor(private db: DatabaseService, loadingController: LoadingController,
     toastController: ToastController, private navCtrl: NavController) {
@@ -45,6 +45,13 @@ export class AnalyticsService extends AbstractUIFeedbackService {
   }
 
   async onRowClick(month: string, year: string, category: string) {
+
+    if (this.enableLogs)
+      console.log("navigateForward('/moneytrackr/tabs/history", {
+        month: month,
+        year: year,
+        category: category
+      });
     this.navCtrl.navigateForward('/moneytrackr/tabs/history', {
       state: {
         data: {

@@ -6,6 +6,7 @@ import { ComponentsModule } from './components/components.module';
 import { DatabaseService } from './database.service';
 import { MoneyTrackrRoutingModule } from './moneytrackr-routing.module';
 import { TabsPage } from './tabs/tabs.page';
+import { ExpensePageModule } from './pages/expense/expense.module';
 
 
 
@@ -16,6 +17,7 @@ import { TabsPage } from './tabs/tabs.page';
     FormsModule,
     IonicModule,
     ComponentsModule,
+    ExpensePageModule,
     MoneyTrackrRoutingModule
   ],
   providers: [

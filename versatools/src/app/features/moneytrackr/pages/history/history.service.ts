@@ -113,6 +113,6 @@ export class HistoryService extends AbstractUIFeedbackService {
   }
 
   async onTransactionClick(e: Transaction) {
-    this.navCtrl.navigateForward('/expense', { state: e });
+    this.navCtrl.navigateForward('moneytrackr/expense', { state: e });
   }
 }

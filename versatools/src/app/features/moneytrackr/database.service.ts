@@ -39,7 +39,7 @@ export class DatabaseService {
           t.Amount AS amount, 
           t.Remarks AS remarks, 
           t.Date AS date, 
-          t.Purpose AS purpose, 
+          'Expense' AS purpose, 
           c.Id AS categoryId, 
           c.Name AS categoryName, 
           c.Icon AS categoryIcon, 
@@ -47,13 +47,12 @@ export class DatabaseService {
           c.Color AS categoryColor, 
           a.Id AS accountId, 
           a.Name AS accountName, 
-          a.Order AS accountOrder, 
-          m.Id AS merchantId, 
-          m.Name AS merchantName
+          1 AS accountOrder, 
+          1 AS merchantId, 
+          t.Beneficiary AS merchantName
         FROM "Transaction" t
         LEFT JOIN "Category" c ON t.CategoryId = c.Id
         LEFT JOIN "Account" a ON t.AccountId = a.Id
-        LEFT JOIN "Merchant" m ON t.Beneficiary = m.Id
         WHERE t.Id = ? 
         LIMIT 1;
       `;
@@ -74,7 +73,7 @@ export class DatabaseService {
       purpose: result.purpose,
       category: result.categoryId
         ? {
-          id: result.categoryId,
+          id: String(result.categoryId),
           name: result.categoryName,
           icon: result.categoryIcon,
           iconOutline: result.categoryIconOutline,
@@ -84,7 +83,7 @@ export class DatabaseService {
         : null,
       account: result.accountId
         ? {
-          id: result.accountId,
+          id: String(result.accountId),
           name: result.accountName,
           order: result.accountOrder,
         }

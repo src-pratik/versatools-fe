@@ -18,7 +18,7 @@ export class TabsPage {
   constructor(private navController: NavController) { }
   onAddExpenseClick() {
 
-    this.navController.navigateRoot("expense")
+    this.navController.navigateRoot("/moneytrackr/expense")
 
   }
 }

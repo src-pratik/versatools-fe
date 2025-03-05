@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs/tabs.page';
+import { ExpensePage } from './pages/expense/expense.page';
 
 const routes: Routes = [
   {
     path: 'tabs',
     component: TabsPage,
     children: [
-      {
-        path: 'expense',
-        loadChildren: () => import('./pages/expense/expense.module').then(m => m.ExpensePageModule)
-      },
+      // {
+      //   path: 'expense',
+      //   loadChildren: () => import('./pages/expense/expense.module').then(m => m.ExpensePageModule)
+      // },
       {
         path: 'analytics',
         loadChildren: () => import('./pages/analytics/analytics.module').then(m => m.AnalyticsPageModule)
@@ -29,6 +30,10 @@ const routes: Routes = [
         pathMatch: 'full',
       }
     ]
+  },
+  {
+    path: 'expense',
+    component:ExpensePage
   },
   {
     path: '',

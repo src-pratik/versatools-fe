@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { HistoryService } from './history.service';
 
@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { __await } from 'tslib';
 import { Category, TransactionGroup, TransactionSummary } from '../../models';
 import { Helper } from '../../helper';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-history',
@@ -13,12 +14,12 @@ import { Helper } from '../../helper';
   styleUrls: ['./history.page.scss'],
   standalone: false
 })
-export class HistoryPage implements OnInit {
-  enableLogs: boolean = false;
+export class HistoryPage implements OnInit, OnDestroy {
+  enableLogs: boolean = true;
 
-  yearslist: string[] | null = null;
+  yearslist: string[] | null = Helper.YearList();;
   monthslist: { index: number, month: string, value: string }[] | null = null;
-  monthselected: string = "01";
+  monthselected: string = String(new Date().getMonth() + 1).padStart(2, "0");
   yearselected: string = new Date().getFullYear().toString();
 
   categorylist: Category[] | null = null;
@@ -27,50 +28,85 @@ export class HistoryPage implements OnInit {
   transactionsummarydata: TransactionSummary[] | null = null;
   transactionactivitydata: TransactionGroup[] | null = null;
 
+  private routeSub: Subscription | null = null;
+
   constructor(private historyService: HistoryService, private route: ActivatedRoute) { }
 
-  async setDefaultFilters() {
-    this.monthselected = new Date().toLocaleString('default', { month: 'numeric' }).padStart(2, "0");
-    this.monthslist = Helper.MonthListForYear(Number(this.yearselected));
-    this.yearslist = Helper.YearList();
-
-    this.categorylist = await this.historyService.getCategoryListAsync();
+  async ngOnInit() {
+    this.log("Calling On PageLoad");
+    this.initializePage();
   }
 
-  async listenToRouteStageChangesAsync() {
-    let sub = this.route.paramMap.subscribe(async params => {
+  ngOnDestroy(): void {
+    this.unsubscribeRoute();
+  }
+
+  private log(message: string, data?: any) {
+    if (this.enableLogs) {
+      console.log(message, data ?? '');
+    }
+  }
+
+  private unsubscribeRoute() {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
+      this.routeSub = null;
+    }
+  }
+
+  private resetData() {
+    this.transactionsummarydata = null;
+    this.transactionactivitydata = null;
+  }
+
+  private async initializePage() {
+    if (!history.state?.data) {
+      this.categorylist = await this.historyService.getCategoryListAsync();
+      this.monthslist = Helper.MonthListForYear(Number(this.yearselected));
+
+      this.log("Default filters set.");
+    }
+    await this.listenToRouteChanges();
+    this.log("Route listening initialized.");
+
+    if (!history.state?.data)
+      this.onFilterChange();
+  }
+
+  private listenToRouteChanges() {
+    this.unsubscribeRoute();
+
+    this.routeSub = this.route.paramMap.subscribe(async () => {
       const data = history.state?.data;
+      this.log("Activated route state", data);
 
-      if (this.enableLogs)
-        console.log("Expense activated route state", data)
+      if (data) {
+        this.categorylist = await this.historyService.getCategoryListAsync();
+        this.yearselected = data.year ?? this.yearselected;
+        this.monthslist = Helper.MonthListForYear(Number(this.yearselected));
 
-      if (data !== undefined && data !== null) {
-        this.monthselected = data?.month;
-        this.categorylist?.forEach(x => {
-          if (x.id === data.category) {
-            this.categoryselected = x;
-          }
-        });
+        this.monthselected = data.month ?? this.monthselected;
+        const categoryIdToFind = String(data.category)
+        this.categoryselected = this.categorylist?.find(x => x.id === categoryIdToFind) || null;
       }
-
       await this.onFilterChange();
     });
-
-  }
-
-  async ngOnInit() {
-    if (this.enableLogs)
-      console.log("Calling On PageLoad")
-    await this.onPageLoad();
   }
 
   async onFilterChange() {
     this.resetData();
-    let result = await this.historyService.onFetchDataAsync(this.monthselected, this.yearselected, this.categoryselected?.id);
-    this.transactionsummarydata = result[0]
-    this.transactionactivitydata = result[1]
+    this.log("Applying filter", { month: this.monthselected, year: this.yearselected, category: this.categoryselected?.id });
 
-    console.log(result[0], result[1])
+    const result = await this.historyService.onFetchDataAsync(
+      this.monthselected,
+      this.yearselected,
+      this.categoryselected?.id
+    );
+
+    this.transactionsummarydata = result[0];
+    this.transactionactivitydata = result[1];
+
+    this.log("Fetched data", result);
   }
 
   async onSelectYearChange() {
@@ -78,26 +114,13 @@ export class HistoryPage implements OnInit {
     this.onFilterChange();
   }
 
-  async onPageLoad() {
-    await this.setDefaultFilters();
-    console.log("Default filters set.")
-    await this.listenToRouteStageChangesAsync();
-    console.log("Reading the route information complete")
-
-  }
-
   async handleRefresh(e: any) {
-    await this.onPageLoad();
+    await this.onFilterChange();
     e.target.complete();
   }
 
   async onTransactionClick(e: any) {
     await this.historyService.onTransactionClick(e);
-  }
-
-  private resetData() {
-    this.transactionsummarydata = null;
-    this.transactionactivitydata = null
   }
 
   valueNull() {

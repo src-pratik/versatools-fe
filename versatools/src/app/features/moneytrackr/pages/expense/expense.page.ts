@@ -55,17 +55,10 @@ export class ExpensePage implements OnInit {
 
   async onPageLoad(expenseId: string) {
     let result = await this.expenseService.onPageLoadAsync(expenseId);
+
+    console.log(result)
     this.viewModel.categories = result[0]
     this.viewModel.accounts = result[1]
-
-
-
-    if (this.viewModel.expense && result[0])
-      this.viewModel.expense.category = result[0][0];
-
-    if (this.viewModel.expense && result[1])
-      this.viewModel.expense.account = result[1][0];
-
 
     if (result[2]) {
       this.viewModel = {
