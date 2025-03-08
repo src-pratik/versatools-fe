@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ExpenseService } from './expense.service';
 import { ExpenseViewModel } from '../../models';
 import { Helper } from '../../helper';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-page-expense',
@@ -10,8 +11,9 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./expense.page.scss'],
   standalone: false
 })
-export class ExpensePage implements OnInit {
-  enableLogs: boolean = false;
+export class ExpensePage implements OnInit, OnDestroy {
+  enableLogs: boolean = true;
+  redirectTo: string = "home";
 
   viewModel: ExpenseViewModel = {
     expense: {
@@ -29,43 +31,66 @@ export class ExpensePage implements OnInit {
     maxdate: (new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)).toISOString(),
     purposes: Helper.PurposeList()
   }
+  private routeSub: Subscription | null = null;
 
   constructor(private expenseService: ExpenseService, private cdr: ChangeDetectorRef, private route: ActivatedRoute,) { }
 
-  async ngOnInit() {
-    let expenseId = '';
+  ngOnDestroy() {
+    this.unsubscribeRoute();
+  }
 
-    await this.route.paramMap.subscribe(params => {
-      const state = history.state;
+  private unsubscribeRoute() {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
+      this.routeSub = null;
+    }
+  }
 
-      if (this.enableLogs)
-        console.log("Expense activated route state", state)
+  private log(message: string, data?: any) {
+    if (this.enableLogs) {
+      console.log(message, data ?? '');
+    }
+  }
 
-      if (state) {
-        expenseId = state?.id;
-      } else {
-
-      }
-    });
-
-    await this.onPageLoad(expenseId);
+  ngOnInit() {
+    this.log("Initializing Page");
+    this.listenToRouteChanges();
 
   }
 
+  private listenToRouteChanges() {
+    this.unsubscribeRoute();
 
-  async onPageLoad(expenseId: string) {
-    let result = await this.expenseService.onPageLoadAsync(expenseId);
+    this.routeSub = this.route.paramMap.subscribe(async () => {
+      const state = history.state;
+      this.log("Activated route state", state);
 
-    console.log(result)
-    this.viewModel.categories = result[0]
-    this.viewModel.accounts = result[1]
-
-    if (result[2]) {
-      this.viewModel = {
-        ...this.viewModel, expense: result[2]
+      const expenseId = state?.expense.id ?? '';
+      if (state?.from) {
+        this.redirectTo = state?.from
       }
-    }
-    // this.viewModel.expense = result[2]
+
+      await this.onPageLoad(expenseId);
+    });
+  }
+
+  private async onPageLoad(expenseId: string) {
+    this.log("Fetching Page Data", { expenseId });
+
+    const [categories, accounts, expenseData] = await this.expenseService.onPageLoadAsync(expenseId);
+
+    this.log("Fetching Page Data", [categories, accounts, expenseData]);
+
+    this.viewModel.categories = categories;
+    this.viewModel.accounts = accounts;
+
+    if (accounts && !expenseData && this.viewModel.expense)
+      this.viewModel.expense.account = accounts[0];
+
+    if (expenseData)
+      this.viewModel.expense = expenseData
+
+    this.viewModel = { ...this.viewModel };
   }
 
   // Refer this for EDIT Mode
@@ -103,7 +128,7 @@ export class ExpensePage implements OnInit {
   }
   async onCancelClick() {
 
-    await this.expenseService.onCancelClick();
+    await this.expenseService.onCancelClick(this.redirectTo);
   }
 
 

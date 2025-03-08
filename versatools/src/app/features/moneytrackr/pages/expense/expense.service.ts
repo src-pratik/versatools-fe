@@ -85,8 +85,12 @@ export class ExpenseService extends AbstractUIFeedbackService {
     }
   }
 
-  async onCancelClick() {
-    await this.navCtrl.navigateRoot("/moneytrackr/tabs/home");
+  async onCancelClick(from: string) {
+    if (from || from !== '') {
+      await this.navCtrl.navigateRoot(`/moneytrackr/tabs/${from}`);
+    } else {
+      await this.navCtrl.navigateRoot(`/moneytrackr/tabs/home`);
+    }
   }
 
   formatNumberString(input: string): string {

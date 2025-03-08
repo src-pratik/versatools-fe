@@ -18,7 +18,7 @@ export class DatabaseService {
     }
 
     // Fetch from database
-    const sql = `SELECT Id AS id, Name AS name, "Order" AS "order" FROM "Account" WHERE Status = 1`;
+    const sql = `SELECT Id AS id, Name AS name, 1 AS "order" FROM "Account" WHERE Status = 1`;
     const result = await this.dbService.fetchRecordsUsingSQL(sql);
     this.accounts = result.map((row: any) => ({
       id: row.id.toString(),
@@ -69,7 +69,7 @@ export class DatabaseService {
       id: result.id,
       amount: parseFloat(result.amount),
       remarks: result.remarks || '',
-      date: result.date,
+      date: new Date(result.date).toISOString(),
       purpose: result.purpose,
       category: result.categoryId
         ? {
@@ -99,25 +99,71 @@ export class DatabaseService {
   }
 
 
-  async saveTransaction(expense: Expense): Promise<any | null> {
-    const sql = `
+  async insertTransaction(expense: Expense): Promise<any> {
+    const insertSql = `
     INSERT INTO "Transaction" 
     ("Amount", "Remarks", "Date", "CategoryId", "AccountId", "Purpose", "Status", "CreateDate", "UpdatedOn", "UserId") 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-    const values = [
+    const insertValues = [
       expense.amount,
       expense.remarks ?? null,
       expense.date, // Ensure this is in 'YYYY-MM-DD' format
       expense.category?.id ?? null,
       expense.account?.id ?? null,
-      expense.purpose ?? null,
+      toPurpose(expense.purpose),
       1, // Assuming 1 means 'Active' status
       new Date().toISOString(), // CreateDate
       new Date().toISOString(), // UpdatedOn
-      null // UserId (modify as needed)
+      null
     ];
+
+    // Execute the insert query
+    return await this.dbService.runQuery(insertSql, insertValues);
   }
+
+  async updateTransaction(expense: Expense): Promise<any> {
+    const updateSql = `
+    UPDATE "Transaction"
+    SET "Amount" = ?,
+        "Remarks" = ?,
+        "Date" = ?,
+        "CategoryId" = ?,
+        "AccountId" = ?,
+        "Purpose" = ?,
+        "Status" = ?,      
+        "UpdatedOn" = ?
+    WHERE "Id" = ?`;
+
+    const updateValues = [
+      expense.amount,
+      expense.remarks ?? null,
+      expense.date, // Ensure this is in 'YYYY-MM-DD' format
+      expense.category?.id ?? null,
+      expense.account?.id ?? null,
+      toPurpose(expense.purpose),
+      1, // Assuming 1 means 'Active' status
+      new Date().toISOString(), // UpdatedOn
+      expense.id // Assuming Id is the unique identifier
+    ];
+
+    // Execute the update query
+    return await this.dbService.runQuery(updateSql, updateValues);
+  }
+
+  async saveTransaction(expense: Expense): Promise<any | null> {
+    if (typeof expense.id === "string" && expense.id.trim().length > 0) {
+      // Call updateTransaction if the expense has a valid non-empty string id
+      return await this.updateTransaction(expense);
+    } else if (typeof expense.id === "number" && expense.id > 0) {
+      // Handle case if id is a number and greater than 0
+      return await this.updateTransaction(expense);
+    } else {
+      // Call insertTransaction if the expense doesn't have a valid id
+      return await this.insertTransaction(expense);
+    }
+  }
+
 
   async getSummaryForMonthAndToday(month: string, year: string): Promise<any> {
     const datestring = `${year}-${month}-01`;
@@ -378,4 +424,15 @@ export class DatabaseService {
       total: rows.reduce((sum, row) => sum + (row.value ?? 0), 0)
     };
   }
+
+
+}
+
+function toPurpose(input: string): string {
+  if (input === "Income") {
+    return "2"; // Output 2 for Income
+  } else if (input === "Expense") {
+    return "1"; // Output 1 for Expense
+  }
+  throw new Error("Invalid purpose value.");
 }

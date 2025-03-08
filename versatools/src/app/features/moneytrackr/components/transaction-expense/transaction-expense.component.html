@@ -64,8 +64,7 @@
     <ion-col>
       <ion-item lines="none">
         <ion-icon name="cash-outline" slot="start" size="large"></ion-icon>
-        <ion-select *ngIf="viewModel.expense.account" [(ngModel)]="viewModel.expense.account" label="Account"
-          labelPlacement="start">
+        <ion-select [(ngModel)]="viewModel.expense.account" label="Account" labelPlacement="start">
           <ion-select-option *ngFor="let account of viewModel.accounts" [value]="account">
             {{ account.name }}
           </ion-select-option>
