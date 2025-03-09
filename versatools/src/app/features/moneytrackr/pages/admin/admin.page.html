@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Admin</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Logs</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-textarea rows="10" readonly [value]="logText$ | async" class="logs-textarea"></ion-textarea>
+    </ion-card-content>
+    <ion-button size="small" (click)="smsLookup()">Scan SMS</ion-button>
+    <ion-button size="small" color="danger" (click)="clearLogs()">Clear</ion-button>
+
+    <ion-card-content *ngIf="transactions">
+      <ion-list>
+        <ion-item *ngFor="let transaction of transactions | slice:0:50">
+          <ion-label>
+            <h2>{{ transaction.sender }}</h2>
+            <p>{{ transaction.date }}</p>
+            <p>{{ transaction.body }} </p>
+            <p>{{ transaction.id }} </p>
+            <p>{{ transaction.status }} </p>
+            <span *ngIf="transaction.parsedData">
+              <strong>Source:</strong> {{ transaction.parsedSource }} |
+              <strong>Data:</strong>
+              <span *ngFor="let key of objectKeys(transaction.parsedData)">
+                {{ key }}: {{ transaction.parsedData[key] }}{{ objectKeys(transaction.parsedData).indexOf(key) <
+                  objectKeys(transaction.parsedData).length - 1 ? ', ' : '' }} </span>
+              </span>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+
+
+
+  <ion-item>
+    <ion-label>Date</ion-label>
+    <ion-datetime-button datetime="datetime"></ion-datetime-button>
+  </ion-item>
+
+  <ion-modal [keepContentsMounted]="true">
+    <ng-template>
+      <ion-datetime id="datetime" presentation="date" [value]="today" (ionChange)="onDateChange($event)"></ion-datetime>
+    </ng-template>
+  </ion-modal>
+</ion-content>

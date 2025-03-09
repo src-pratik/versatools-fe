@@ -6,8 +6,7 @@ import { ComponentsModule } from './components/components.module';
 import { DatabaseService } from './database.service';
 import { MoneyTrackrRoutingModule } from './moneytrackr-routing.module';
 import { TabsPage } from './tabs/tabs.page';
-import { ExpensePageModule } from './pages/expense/expense.module';
-import { TransactionService } from './transaction.service';
+import { SMSRetrievalService } from 'src/app/sms-processing/services/sms-retrieval.service';
 
 
 
@@ -18,12 +17,11 @@ import { TransactionService } from './transaction.service';
     FormsModule,
     IonicModule,
     ComponentsModule,
-    ExpensePageModule,
     MoneyTrackrRoutingModule
   ],
   providers: [
     DatabaseService,
-    TransactionService
+    SMSRetrievalService
   ]
 })
 export class MoneyTrackrModule { }
