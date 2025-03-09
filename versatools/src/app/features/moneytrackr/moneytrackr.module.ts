@@ -7,6 +7,7 @@ import { DatabaseService } from './database.service';
 import { MoneyTrackrRoutingModule } from './moneytrackr-routing.module';
 import { TabsPage } from './tabs/tabs.page';
 import { ExpensePageModule } from './pages/expense/expense.module';
+import { TransactionService } from './transaction.service';
 
 
 
@@ -21,7 +22,8 @@ import { ExpensePageModule } from './pages/expense/expense.module';
     MoneyTrackrRoutingModule
   ],
   providers: [
-    DatabaseService
+    DatabaseService,
+    TransactionService
   ]
 })
 export class MoneyTrackrModule { }

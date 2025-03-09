@@ -25,21 +25,26 @@ const routes: Routes = [
         loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
       },
       {
+        path: 'test',
+        loadChildren: () => import('./pages/test/test.module').then(m => m.TestPageModule)
+      },
+      {
         path: '',
-        redirectTo: 'home', // ✅ Redirect within TabsPage (NO `/tabs/` prefix)
+        redirectTo: 'test', // ✅ Redirect within TabsPage (NO `/tabs/` prefix)
         pathMatch: 'full',
       }
     ]
   },
   {
-    path: 'expense',
-    component:ExpensePage
-  },
-  {
     path: '',
     redirectTo: 'tabs', // ✅ Redirect root to 'tabs'
     pathMatch: 'full',
-  }
+  },
+  {
+    path: 'expense',
+    component: ExpensePage
+  },
+
 ];
 
 @NgModule({

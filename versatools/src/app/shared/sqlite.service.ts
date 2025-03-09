@@ -76,7 +76,7 @@ export abstract class AbstractSQLiteService {
     const values = columns.map((key) => data[key]);
     const placeholders = columns.map(() => '?').join(',');
 
-    const query = `INSERT INTO ${table} (${columns.join(', ')}) VALUES (${placeholders});`;
+    const query = `INSERT INTO "${table}" (${columns.join(', ')}) VALUES (${placeholders});`;
     console.info(`Executing query: ${query} with values: ${values}`);
     await this.db.run(query, values);
   }

@@ -23,6 +23,11 @@ const routes: Routes = [
           import('../pages/history/history.module').then((m) => m.HistoryPageModule),
       },
       {
+        path: 'test',
+        loadChildren: () =>
+          import('../pages/test/test.module').then((m) => m.TestPageModule),
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full',

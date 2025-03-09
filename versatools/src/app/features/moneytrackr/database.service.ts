@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MoneyTrackrDatabaseService } from './moneytrackrsqlite.service';
 import { Account, Category, Expense, ExpenseViewModel, ReportCategoryGroupedRow, ReportCategoryGroupedViewModel, Transaction, TransactionGroup, TransactionSummary } from './models';
 import { Observable, of } from 'rxjs';
-
+import { Transaction as dbTransaction } from './dbmodel'
 @Injectable()
 export class DatabaseService {
   enableLogs: boolean = false;
@@ -163,7 +163,6 @@ export class DatabaseService {
       return await this.insertTransaction(expense);
     }
   }
-
 
   async getSummaryForMonthAndToday(month: string, year: string): Promise<any> {
     const datestring = `${year}-${month}-01`;
@@ -425,7 +424,32 @@ export class DatabaseService {
     };
   }
 
+  public async addTransaction(transaction: dbTransaction): Promise<boolean> {
 
+    // Step 1: Check by Transaction ID
+    if (transaction.transactionId) {
+      const queryById = 'SELECT id FROM "Transaction" WHERE transactionId = ?;';
+      const resultById = await this.dbService.fetchRecordsUsingSQL(queryById, [transaction.transactionId]);
+      if (resultById.length > 0) return false;
+    }
+
+    // Step 2: Check by Date (date part only), Amount, and Beneficiary
+    if (transaction.date && transaction.amount && transaction.beneficiary) {
+      const queryByDetails =
+        'SELECT id FROM "Transaction" WHERE DATE(date) = DATE(?) AND amount = ? AND beneficiary = ?;';
+      const values = [
+        transaction.date, // Convert date to "YYYY-MM-DD"
+        transaction.amount,
+        transaction.beneficiary,
+      ];
+      const resultByDetails = await this.dbService.fetchRecordsUsingSQL(queryByDetails, values);
+      if (resultByDetails.length > 0) return true;
+    }
+
+    await this.dbService.addRecord("Transaction", transaction);
+
+    return true;
+  }
 }
 
 function toPurpose(input: string): string {
